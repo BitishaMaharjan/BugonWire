@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const bgImage = new Image();
     bgImage.src = './Assets/images/background.png';
+    const gameOverMusic = new Audio('./Assets/audio/gameover.mp3');
+    gameOverMusic.pause();
 
     class Bug {
         constructor() {
@@ -136,10 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         draw() {
             if (this.isEating == true) {
-               
                 c.drawImage(birdEating, this.position.x, this.position.y, this.width, this.height);
             } else {
-                
                 c.drawImage(crowImage, this.position.x, this.position.y, this.width, this.height);
             }
         }
@@ -175,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
         score = 0;
     }
 
-   
     let wirePositions = [];
 
     function drawWires() {
@@ -185,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const vanishingPointY = canvas.height + bgOffset + 60; // Y-coordinate of the bottom of the wires adjusted by bgOffset
         const vanishingPointX = canvas.width / 2; // X-coordinate of the center of the canvas
 
-        // Initialize wire positions 
+        
         if (wirePositions.length === 0) {
             for (let i = 0; i < wireCount; i++) {
                 const startX = vanishingPointX - (wireCount / 2) * spacing + i * spacing;
@@ -274,16 +273,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 bug.onWire &&
                 bug.position.x < obstacle.position.x + obstacle.width &&
                 bug.position.x + bug.width > obstacle.position.x &&
-                bug.position.y < obstacle.position.y + obstacle.height &&
-                bug.position.y + bug.height > obstacle.position.y
+                bug.position.y + 35 < obstacle.position.y + obstacle.height &&
+                bug.position.y + bug.height > obstacle.position.y  + 30
             ) {
                 obstacle.isEating = true;
-                
+        
+                const backgroundMusic = document.getElementById('background-music');
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+                // Play game over music
+                gameOverMusic.play()
                 setTimeout(() => {
                     obstacle.isEating = false;
                 }, 1000); 
                 alert('Game Over! Your score: ' + score);
+                gameOverMusic.pause()
+                gameOverMusic.currentTime = 0;
                 init();
+                backgroundMusic.play()
             }
         });
 
@@ -300,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.addEventListener('keydown', (event) => {
-        if (event.code === 'Space') {
+        if (event.code === 'ArrowUp') {
             keys.space.pressed = true;
         }
         if (event.code === 'ArrowLeft') {
@@ -312,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.addEventListener('keyup', (event) => {
-        if (event.code === 'Space') {
+        if (event.code === 'ArrowUp') {
             keys.space.pressed = false;
         }
     });
@@ -322,7 +329,6 @@ document.addEventListener('DOMContentLoaded', () => {
         animate();
     }
 
-   
     bugImage.onload = () => {
         console.log('Bug image loaded');
         crowImage.onload = () => {
@@ -331,11 +337,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Bird eating image loaded');
                 bgImage.onload = () => {
                     console.log('Background image loaded');
-                
-                   ; 
+                    
                 };
             };
         };
     };
-    startGame()
+    startGame();
 });

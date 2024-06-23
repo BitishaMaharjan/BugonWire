@@ -59,6 +59,7 @@
             display: flex;
             flex-direction: column;
             gap: 50px;
+            margin-bottom: 20px;
             align-items: center;
             position: relative;
             z-index: 2;
@@ -93,6 +94,8 @@
 </head>
 <body>
     <div class="splash-screen">
+        
+        
         <img src="./Assets/images/miniclip.jpg" alt="Miniclip Image">
     </div>
     <div class="main-content">
@@ -102,34 +105,71 @@
             </div>
         </div>
     </div>
-    
+    <audio id="music" autoplay >
+        <source src="./Assets/audio/opening.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+  
     <div class="instructions">
-        Use side arrows to move sideways and space to jump
+        Use side arrows to move sideways and space to jump.
     </div>
 
     <script>
-        setTimeout(() => {
-            showMainContent();
-        }, 3000);
+         
+        // Wait for DOM content to load before executing JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            const music = document.getElementById('music');
+            let played = false;
+           
+            // Function to play music when called
+            function playMusic() {
+                if (!played) {
+                    const playPromise = music.play();
 
-        function showMainContent() {
-            const splashScreen = document.querySelector('.splash-screen');
-            splashScreen.style.opacity = '0';
+                    // Handle promise rejection
+                    if (playPromise !== undefined) {
+                        playPromise.then(_ => {
+                            // Autoplay started
+                            played = true;
+                            console.log('Music autoplayed.');
+                        }).catch(error => {
+                            // Autoplay was prevented
+                            console.error('Autoplay prevented:', error);
+                        });
+                    }
+                }
+                
+            }
 
-            const mainContent = document.querySelector('.main-content');
-            mainContent.style.display = 'flex';
-            setTimeout(() => {
-                mainContent.classList.add('show');
-            }, 100);
+            // Play music directly on page load
+            playMusic();
 
-            setTimeout(() => {
-                splashScreen.style.display = 'none';
-                document.body.style.backgroundColor = 'white';
-                document.addEventListener('click', function() {
-                    window.location.href = 'game.html';
-                });
-            }, 1500);
-        }
+            // Function to show main content after splash screen
+            function showMainContent() {
+                const splashScreen = document.querySelector('.splash-screen');
+                splashScreen.style.opacity = '0';
+
+                const mainContent = document.querySelector('.main-content');
+                mainContent.style.display = 'flex';
+                setTimeout(() => {
+                    mainContent.classList.add('show');
+                }, 100);
+
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    document.body.style.backgroundColor = 'white';
+                    
+                    // Redirect to game.html on click after showing main content
+                    document.addEventListener('click', function() {
+                        window.location.href = 'game.html';
+                    });
+                }, 1500);
+                
+            }
+
+            // Delay to show main content after 4 seconds
+            setTimeout(showMainContent, 4000);
+        });
     </script>
 </body>
 </html>

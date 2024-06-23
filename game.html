@@ -64,6 +64,15 @@ canvas {
             <p>Press Space to jump</p>
             <p>Avoid the obstacles!</p>
         </div>
+        <!-- Audio element for background music -->
+    <audio id="background-music" autoplay loop>
+        <source src="./Assets/audio/background.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <audio pause>
+        <source src="./Assets/audio/gameover.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
         <canvas id="main-canvas" ></canvas>
     </div>
     <script src="./script.js"></script>
