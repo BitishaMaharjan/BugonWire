@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     bugImage.src = './Assets/images/bugsprite.png';
 
     const birdEating = new Image();
-    birdEating.src = './Assets/images/birdeating.png'; 
+    birdEating.src = './Assets/images/fly.png'; 
 
     const crowImage = new Image();
     crowImage.src = './Assets/images/bird.png';
@@ -118,42 +118,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     class Obstacle {
-        constructor(y, wireIndex, width, height) {
+        constructor(y, wireIndex, width, height, isBird) {
             this.wireIndex = wireIndex;
             this.position = {
-                x: this.getWireX(wireIndex) - width / 2,
+                x: this.getWireX(wireIndex) - width / 2, // Center the obstacle on the wire
                 y: y
             };
             this.width = width;
             this.height = height;
-            this.isEating = false;
-            this.eatingStartTime = 0; 
+            this.isBird = isBird; // Indicates if this obstacle is a bird
+            this.image = this.isBird ? birdEating : crowImage; // Select image based on isBird flag
         }
-
+    
         getWireX(wireIndex) {
             const middle = canvas.width / 2 - 150;
             const spacing = 148;
-            return middle + (wireIndex - 2) * spacing; 
+            return middle + (wireIndex - 2) * spacing + 30;
         }
-
+    
         draw() {
-            if (this.isEating == true) {
-                c.drawImage(birdEating, this.position.x, this.position.y, this.width, this.height);
-            } else {
-                c.drawImage(crowImage, this.position.x, this.position.y, this.width, this.height);
-            }
+            c.drawImage(this.image, this.position.x - (this.isBird ? 0 : 20), this.position.y, this.width, this.height);
         }
-
+    
         update() {
             this.draw();
             this.position.y += gameSpeed;
-
-            // Check if bird eating animation duration has passed
-            if (this.isEating && Date.now() - this.eatingStartTime > 1000) {
-                this.isEating = false;
-            }
         }
     }
+    
+    
+      
 
     let bug;
     let obstacles = [];
@@ -281,26 +275,71 @@ document.addEventListener('DOMContentLoaded', () => {
                 const backgroundMusic = document.getElementById('background-music');
                 backgroundMusic.pause();
                 backgroundMusic.currentTime = 0;
+                // gameOverMusic.play()
+                // window.location.href = 'gameOver.html';
+                // Inside the collision detection or game over logic
+               // Inside the collision detection or game over logic
+               const currentScore = score; // Replace with your actual score logic
+              localStorage.setItem('score', currentScore.toString()); // Store score in local storage
+
+            // Redirect to game over screen
+              window.location.href = 'gameOver.html';
+
+
+              
+                
+
                 // Play game over music
-                gameOverMusic.play()
-                setTimeout(() => {
-                    obstacle.isEating = false;
-                }, 1000); 
-                alert('Game Over! Your score: ' + score);
+               
+                // setTimeout(() => {
+                //     obstacle.isEating = false;
+                    
+                // }, 2000); 
+               
+                
                 gameOverMusic.pause()
                 gameOverMusic.currentTime = 0;
+              
                 init();
-                backgroundMusic.play()
+                backgroundMusic.play();
+                // Redirect to gameover.html with score
+                
             }
         });
 
-        if (Math.random() < 0.02) {
-            const width = 50;
-            const height = 50;
-            const wireIndex = Math.floor(Math.random() * 4) + 1;
-            obstacles.push(new Obstacle(-height, wireIndex, width, height));
+      // Generate obstacles
+      // Generate obstacles
+      if (Math.random() < 0.02) {
+        const width = 50;
+        const height = 50;
+        let wireIndex;
+
+        // Track last obstacle wire index
+        let lastObstacleWireIndex = -1;
+        if (obstacles.length > 0) {
+            lastObstacleWireIndex = obstacles[obstacles.length - 1].wireIndex;
         }
 
+        // Randomly choose wire index, avoiding the middle two wires for regular crow obstacles
+        do {
+            wireIndex = Math.floor(Math.random() * 4) + 1;
+        } while (
+            (wireIndex === 2 && lastObstacleWireIndex === 3) || // Avoid placing on adjacent wires
+            (wireIndex === 3 && lastObstacleWireIndex === 2) ||
+            (wireIndex === lastObstacleWireIndex) // Avoid placing on the same wire as the last obstacle
+        );
+
+        if (wireIndex === 1 || wireIndex === 4) {
+            // Create fly obstacle
+            obstacles.push(new Obstacle(-height, wireIndex, width, height, true));
+        } else {
+            // Create crow obstacle
+            obstacles.push(new Obstacle(-height, wireIndex, width, height));
+           
+        }
+    }
+
+    
         c.fillStyle = '#000';
         c.font = '24px Arial';
         c.fillText('Score: ' + score, 10, 30);
