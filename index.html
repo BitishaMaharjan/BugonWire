@@ -3,69 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bug on Wire Game</title>
+    <title>Bug on Wire</title>
     <style>
         body, html {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    background-color: #f0f0f0;
-}
-
-.game-container {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start; /* Align the instructions and canvas at the top */
-    width: 100%;
-    height: 100%;
-}
-
-canvas {
-    background-color: #e0e0e0;
-    z-index: 1;
-}
-
-.instructions {
-    width: 300px;
-    margin-right: 20px;
-    font-family: Arial, sans-serif;
-    color: #333;
-    z-index: 2;
-    background-color: #ffffff;
-    padding: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.instructions h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-.instructions p {
-    font-size: 18px;
-    margin: 5px 0;
-}
-.main-canvas{
-    width: 800px;
-    height: 1000px;
-}
-
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+        body {
+            background-color: black;
+            transition: background-color 1.5s ease;
+        }
+        .splash-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: lightblue;
+            opacity: 1;
+            z-index: 1;
+            transition: opacity 0.5s ease;
+        }
+        .splash-screen img {
+            width: 100vw;
+            height: 100vh;
+        }
+        .main-content {
+            display: none;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('./Assets/images/bugOnWire.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            clip-path: circle(0% at center);
+            opacity: 0;
+            transition: opacity 0.5s ease, clip-path 1.5s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        .main-content.show {
+            opacity: 1;
+            clip-path: circle(100% at center);
+        }
+        .main {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        .title {
+            font-size: 50px;
+            font-weight: bolder;
+            color: rgb(0, 68, 79);
+        }
+        @media (min-width:768px) {
+            .title {
+                font-size: 100px;
+            }
+        }
+        @media (min-width:1108px) {
+            .title {
+                font-size: 190px;
+            }
+        }
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            margin: auto;
+            text-align: center;
+            color: rgb(24, 227, 24);
+            font-size: 30px;
+            font-weight: bolder;
+        }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="instructions">
-            <h1>Instructions</h1>
-            <p>Use Left and Right arrow keys to move</p>
-            <p>Press Space to jump</p>
-            <p>Avoid the obstacles!</p>
-        </div>
-        <canvas id="main-canvas" ></canvas>
+    <div class="splash-screen">
+        <img src="./Assets/images/miniclip.jpg" alt="Miniclip Image">
     </div>
-    <script src="./script.js"></script>
+    <div class="main-content">
+        <div class="main">
+            <div class="title">
+                Bug <sub>on</sub> Wire
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        Use side arrows to move sideways and space to jump
+    </div>
+
+    <script>
+        setTimeout(() => {
+            showMainContent();
+        }, 3000);
+
+        function showMainContent() {
+            const splashScreen = document.querySelector('.splash-screen');
+            splashScreen.style.opacity = '0';
+
+            const mainContent = document.querySelector('.main-content');
+            mainContent.style.display = 'flex';
+            setTimeout(() => {
+                mainContent.classList.add('show');
+            }, 100);
+
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+                document.body.style.backgroundColor = 'white';
+                document.addEventListener('click', function() {
+                    window.location.href = 'game.html';
+                });
+            }, 1500);
+        }
+    </script>
 </body>
 </html>
