@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Transition</title>
+<style>
+  body, html {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .game {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #8B4513;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    
+    clip-path: circle(0% at 70% 70%);;
+    transition: clip-path 1s ease;
+  }
+
+  .overlay.shrink {
+    clip-path: ellipse(30% 20% at 50% 50%);
+  }
+
+  .sorry {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 94px;
+    font-weight: bold;
+    color: rgb(19, 153, 255);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 1s ease;
+    animation: bounce 0.5s ease forwards;
+    animation-delay: 1s;
+  }
+  
+  .score1{
+    font-size: 24px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 1s ease;
+    animation: bounce 0.5s ease forwards;
+    animation-delay: 2s;
+  }
+
+  .sorry.show, .score.show {
+    opacity: 1;
+  }
+
+  @keyframes bounce {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -70%) scale(1.2); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+  }
+
+  .restart {
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div id="game" class="game"></div>
+<div id="overlay" class="overlay"></div>
+<div id="sorry" class="sorry">
+    <div>Sorry!</div>
+    <div  class="score">Your score is:  <span id="score"></span></div>
+   
+    <div class="restart">Click anywhere to restart</div>
+</div>
+<audio id="music" autoplay>
+  <source src="./Assets/audio/gameover.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    function endGame() {
+      var overlay = document.getElementById('overlay');
+      var sorry = document.getElementById('sorry');
+      var scoreElement = document.getElementById('score1'); // Correct score element
+
+      const score = localStorage.getItem('score');
+            document.getElementById('score').textContent = score;
+            localStorage.removeItem('score'); 
+      
+      var initialWidth = 300;
+      var initialHeight = 200;
+      var targetWidth = 30;
+      var targetHeight = 20;
+      
+      var step = 5;
+      var currentWidth = initialWidth;
+      var currentHeight = initialHeight;
+      
+      function shrinkOverlay() {
+        if (currentWidth > targetWidth || currentHeight > targetHeight) {
+          currentWidth -= step;
+          currentHeight -= step * (initialHeight / initialWidth); 
+          overlay.style.clipPath = `ellipse(${currentWidth}% ${currentHeight}% at 50% 50%)`;
+          requestAnimationFrame(shrinkOverlay);
+        } else {
+          overlay.classList.add('shrink');
+          setTimeout(function() {
+            sorry.classList.add('show');
+            scoreElement.classList.add('show'); 
+          }, 100);
+        }
+      }
+      
+      shrinkOverlay();
+    }
+    
+    endGame();
+
+    document.addEventListener('click', function() {
+      window.location.href = 'game.html';
+    });
+  });
+</script>
+</body>
+</html>
