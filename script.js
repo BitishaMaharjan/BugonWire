@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameOverMusic = new Audio('./Assets/audio/gameover.mp3');
     gameOverMusic.pause();
 
+    const gameMusic = new Audio('./Assets/audio/background.mp3');
+    
+
     class Bug {
         constructor() {
             this.position = {
@@ -299,9 +302,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 gameOverMusic.pause()
                 gameOverMusic.currentTime = 0;
-              
-                init();
                 backgroundMusic.play();
+                init();
+               
                 // Redirect to gameover.html with score
                 
             }
