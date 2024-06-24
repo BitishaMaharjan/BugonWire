@@ -119,12 +119,15 @@
         // Wait for DOM content to load before executing JavaScript
         document.addEventListener('DOMContentLoaded', () => {
             const music = document.getElementById('music');
+           
             let played = false;
            
             // Function to play music when called
             function playMusic() {
                 if (!played) {
                     const playPromise = music.play();
+                   
+                    
 
                     // Handle promise rejection
                     if (playPromise !== undefined) {
@@ -132,6 +135,7 @@
                             // Autoplay started
                             played = true;
                             console.log('Music autoplayed.');
+                            
                         }).catch(error => {
                             // Autoplay was prevented
                             console.error('Autoplay prevented:', error);
